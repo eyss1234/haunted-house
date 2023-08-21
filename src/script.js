@@ -39,13 +39,8 @@ const bricksNormalTexture = textureLoader.load('/textures/bricks/normal.jpg')
 const bricksRoughnessTexture = textureLoader.load('/textures/bricks/roughness.jpg')
 
 const bushesColorTexture = textureLoader.load('/textures/bush/leafy_grass_diffuse.jpg')
-const bushesAmbientOcclusionTexture = textureLoader.load('/textures/bush/leafy_grass_ambient_occlusion.jpg')
-const bushesRoughnessTexture = textureLoader.load('/textures/bush/leafy_grass_roughness.jpg')
 
 const gravesColorTexture = textureLoader.load('/textures/graves/dirty_concrete_diffuse.jpg')
-const gravesAmbientOcclusionTexture = textureLoader.load('/textures/graves/dirty_concrete_ambient_occlusion.jpg')
-const gravesNormalTexture = textureLoader.load('/textures/graves/dirty_concrete_normal.jpg')
-const gravesRoughnessTexture = textureLoader.load('/textures/graves/dirty_concrete_roughness.jpg')
 
 const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
@@ -131,8 +126,6 @@ const bushGeometry = new THREE.SphereGeometry(1, 16, 16)
 const bushMaterial = new THREE.MeshStandardMaterial({ 
     color: '#74b72e',
     map: bushesColorTexture,
-    aoMap: bushesAmbientOcclusionTexture,
-    roughnessMap: bushesRoughnessTexture
 })
 
 const bush1 = new THREE.Mesh(bushGeometry, bushMaterial)
@@ -156,9 +149,6 @@ const graves = new THREE.Group()
 const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2)
 const graveMaterial = new THREE.MeshStandardMaterial({ 
     map: gravesColorTexture,
-    aoMap: gravesAmbientOcclusionTexture,
-    normalMap: gravesNormalTexture,
-    roughnessMap: gravesRoughnessTexture
  })
 
 for(let i = 0; i < 50; i++){
@@ -171,6 +161,7 @@ for(let i = 0; i < 50; i++){
     grave.position.set(x, 0.3, z)
     grave.rotation.y = (Math.random() - 0.5 ) * 0.4
     grave.rotation.z = (Math.random() - 0.5 ) * 0.4
+    grave.castShadow = true
     graves.add(grave)
 }
 
@@ -205,7 +196,6 @@ const ghost1 = new THREE.PointLight('#ff00ff', 2, 3)
 const ghost2 = new THREE.PointLight('#00ffff', 2, 3)
 
 const ghost3 = new THREE.PointLight('#ffff00', 2, 3)
-
 
 scene.add(ghost1, ghost2, ghost3)
 
@@ -256,6 +246,45 @@ renderer.outputColorSpace = THREE.LinearSRGBColorSpace
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.setClearColor('#262837')
+
+/**
+ * Shadows
+ */
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+moonLight.castShadow = true
+doorLight.castShadow = true
+ghost1.castShadow = true
+ghost2.castShadow = true
+ghost3.castShadow = true
+
+walls.castShadow = true
+bush1.castShadow = true
+bush2.castShadow = true
+bush3.castShadow = true
+
+floor.receiveShadow = true
+
+moonLight.shadow.mapSize.width = 256
+moonLight.shadow.mapSize.height = 256
+moonLight.shadow.camera.far = 15
+
+doorLight.shadow.mapSize.width = 256
+doorLight.shadow.mapSize.height = 256
+doorLight.shadow.camera.far = 7
+
+ghost1.shadow.mapSize.width = 256
+ghost1.shadow.mapSize.height = 256
+ghost1.shadow.camera.far = 7
+
+ghost2.shadow.mapSize.width = 256
+ghost2.shadow.mapSize.height = 256
+ghost2.shadow.camera.far = 7
+
+ghost3.shadow.mapSize.width = 256
+ghost3.shadow.mapSize.height = 256
+ghost3.shadow.camera.far = 7
 
 /**
  * Animate
